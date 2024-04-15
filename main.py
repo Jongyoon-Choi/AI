@@ -16,7 +16,7 @@ with open('TSP.csv', mode='r', newline='') as tsp:
         cities.append(row)
 
 # 방문할 도시 수
-num_cities=10
+num_cities=5
 
 # 탐색 방법
 search_method='A_star'
