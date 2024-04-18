@@ -10,18 +10,25 @@ cities = load_csv('TSP.csv')
 sol = []
 
 # 방문할 도시 수
-num_cities=20
+num_cities=10
 
 # 탐색 방법
 search_method='A_star'
 
+# subgraph 반복 탐색
+# start=0
+
+# for i in range(100):
+#     sol += A_star(cities, start=start, end= start+num_cities)
+#     start += num_cities
+
 # Search
 if search_method=='UCS':
-    sol= UCS(cities[:num_cities])
+    sol += UCS(cities[:num_cities])
 elif search_method=='greedy':
-    sol= greedy(cities[:num_cities])
+    sol += greedy(cities[:num_cities])
 elif search_method=='A_star':
-    sol= A_star(cities[:num_cities])
+    sol += A_star(cities, 0, num_cities)
 
 # save as csv
 save_csv(sol, f'solutions/{search_method}_{num_cities}.csv')
