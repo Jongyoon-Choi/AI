@@ -7,7 +7,7 @@ def A_star(start = 0, end = 1000): # cities[start,end-1]을 탐색
     # 시작 도시
     start_city = 0
     
-    # 초기화 (총 비용 (비용 + 휴리스틱), 비용, 도시, 방문 여부, 방문 순서)
+    # 초기화 (총 비용 (비용 + 휴리스틱), 비용, 현재 도시, 방문 여부, 방문 순서)
     pq = [(0, 0, start_city, [i == start_city for i in range(num_cities)], [start_city])]
     
     dist_table=load_csv('distance.csv')[start:end] # 행 슬라이싱
@@ -39,7 +39,7 @@ def A_star(start = 0, end = 1000): # cities[start,end-1]을 탐색
                 
                 new_path = path + [next_city]
                 
-                new_cost = cost + dist_table[current_city, next_city]
+                new_cost = cost + float(dist_table[current_city][next_city])
                 heuristic = heuristic_function(dist_table, new_visited)
                 total_cost = new_cost + heuristic
                 
@@ -55,7 +55,9 @@ def heuristic_function(dist_table, new_visited):
     for i in range(num_cities):
         if not new_visited[i]:
             # 자기 자신을 제외한 최소 거리 찾기
-            min_distance = min((float(dist_table[i][j]) for j in range(num_cities) if j != i and not new_visited[j]), default=0)
+            distance_list=[float(dist_table[i][j]) for j in range(num_cities) if j != i and not new_visited[j]]
+            min_distance = min(distance_list) if distance_list else float(dist_table[i][0]) # 마지막 노드인 경우 원점으로 돌아가는 비용
+            # min_distance = min((float(dist_table[i][j]) for j in range(num_cities) if j != i and not new_visited[j]), default=0) # 성능 저하 but 시간 감소
             min_distances.append(min_distance)
 
     # 방문하지 않은 노드 중 자신을 제외한 최소 거리의 합
