@@ -1,6 +1,6 @@
 num_cities=10
-greedy: 10, 2.81
-UCS: 15201, 2.81 (방문 노드수, 최종 cost)
+greedy: 10, 2.81 (방문 노드수, 최종 cost)
+UCS: 15201, 2.81 
 A_star: 100,2.88
 
 num_cities=15
