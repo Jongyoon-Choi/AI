@@ -1,7 +1,8 @@
 num_cities=10
-greedy: 10, 3.38 (방문 노드수, 최종 cost)
+greedy: 10, 3.38 (방문 노드수, 최종 비용)
 UCS: 15201, 3.38
 A_star: 218, 3.38
+GA: 313, 3.37 (세대 수, 비용)
 
 num_cities=15
 greedy: 15, 3.72
