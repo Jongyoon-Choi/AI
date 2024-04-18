@@ -4,7 +4,7 @@ from search_methods.UCS import UCS
 from search_methods.A_star import A_star
 
 # 좌표를 불러와서 리스트로 저장
-cities = load_csv('TSP.csv')
+cities = load_csv('2024_AI_TSP.csv')
 
 # 결과 초기화
 sol = []
@@ -15,13 +15,6 @@ num_cities=10
 # 탐색 방법
 search_method='A_star'
 
-# subgraph 반복 탐색
-# start=0
-
-# for i in range(100):
-#     sol += A_star(cities, start=start, end= start+num_cities)
-#     start += num_cities
-
 # Search
 if search_method=='UCS':
     sol += UCS(cities[:num_cities])
@@ -29,6 +22,13 @@ elif search_method=='greedy':
     sol += greedy(cities[:num_cities])
 elif search_method=='A_star':
     sol += A_star(cities, 0, num_cities)
+
+# subgraph 반복 탐색
+# start=0
+
+# for i in range(100):
+#     sol += A_star(cities, start=start, end= start+num_cities)
+#     start += num_cities
 
 # save as csv
 save_csv(sol, f'solutions/{search_method}_{num_cities}.csv')
