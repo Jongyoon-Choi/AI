@@ -10,7 +10,7 @@ cities = load_csv('2024_AI_TSP.csv')
 sol = []
 
 # 방문할 도시 수
-num_cities=10
+num_cities=15
 
 # 탐색 방법
 search_method='A_star'
@@ -21,13 +21,13 @@ if search_method=='UCS':
 elif search_method=='greedy':
     sol += greedy(cities[:num_cities])
 elif search_method=='A_star':
-    sol += A_star(cities, 0, num_cities)
+    sol += A_star(0, num_cities)
 
 # subgraph 반복 탐색
 # start=0
 
 # for i in range(100):
-#     sol += A_star(cities, start=start, end= start+num_cities)
+#     sol += A_star(start=start, end= start+num_cities)
 #     start += num_cities
 
 # save as csv

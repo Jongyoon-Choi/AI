@@ -1,10 +1,8 @@
 import heapq
-from utils import load_csv, distance, get_pos
+from utils import load_csv
 
-def A_star(cities, start = 0, end = 1000): # cities[start,end-1]을 탐색
+def A_star(start = 0, end = 1000): # cities[start,end-1]을 탐색
     num_cities = end-start
-
-    new_cities=cities[start:end]
     
     # 시작 도시
     start_city = 0
@@ -12,17 +10,15 @@ def A_star(cities, start = 0, end = 1000): # cities[start,end-1]을 탐색
     # 초기화 (총 비용 (비용 + 휴리스틱), 비용, 도시, 방문 여부, 방문 순서)
     pq = [(0, 0, start_city, [i == start_city for i in range(num_cities)], [start_city])]
     
-    sol=None
-    count=0
     dist_table=load_csv('distance.csv')[start:end] # 행 슬라이싱
     dist_table=[row[start:end] for row in dist_table] # 열 슬라이싱
+
+    count=0 # 방문 노드 수
+    sol=None
 
     while pq:
         # 가장 우선순위가 높은 노드
         total_cost, cost, current_city, visited, path = heapq.heappop(pq)
-        
-        # 현재 도시의 좌표
-        pos_current_city = get_pos(new_cities, current_city)
         
         # 출력
         # print(path, total_cost)
@@ -43,8 +39,7 @@ def A_star(cities, start = 0, end = 1000): # cities[start,end-1]을 탐색
                 
                 new_path = path + [next_city]
                 
-                pos_next_city=get_pos(new_cities, next_city)
-                new_cost = cost + distance(pos_current_city, pos_next_city)
+                new_cost = cost + dist_table[current_city, next_city]
                 heuristic = heuristic_function(dist_table, new_visited)
                 total_cost = new_cost + heuristic
                 
