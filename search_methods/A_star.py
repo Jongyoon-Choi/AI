@@ -1,5 +1,5 @@
 import heapq
-from utils import distance, get_pos
+from utils import load_csv, distance, get_pos
 
 def A_star(cities):
     num_cities = len(cities)
@@ -12,7 +12,8 @@ def A_star(cities):
     
     sol=None
     count=0
-    
+    dist_table=load_csv('distance.csv')[:num_cities][:num_cities]
+
     while pq:
         # 가장 우선순위가 높은 노드
         total_cost, cost, current_city, visited, path = heapq.heappop(pq)
@@ -41,21 +42,23 @@ def A_star(cities):
                 
                 pos_next_city=get_pos(cities, next_city)
                 new_cost = cost + distance(pos_current_city, pos_next_city)
-                heuristic = estimate_remaining_cost(cities, new_visited, next_city)
+                heuristic = heuristic_function(dist_table, new_visited)
                 total_cost = new_cost + heuristic
                 
                 heapq.heappush(pq, (total_cost, new_cost, next_city, new_visited, new_path))
     
     return sol
 
-# 잔여 비용 추정을 위한 휴리스틱 함수
-def estimate_remaining_cost(cities, visited, current_city):
-    num_cities = len(cities)
-    
-    # 남은 방문 도시 수
-    remaining_cities = num_cities - sum(visited)
-    
-    # 각 방문하지 않은 도시 중 최소 거리
-    min_distance = min((distance(get_pos(cities, current_city), [float(city[0]), float(city[1])]) for city, is_visited in zip(cities, visited) if not is_visited), default=0)
-    
-    return min_distance * remaining_cities
+# 휴리스틱 함수
+def heuristic_function(dist_table, new_visited):
+    num_cities = len(dist_table)
+    min_distances = []
+
+    for i in range(num_cities):
+        if not new_visited[i]:
+            # 자기 자신을 제외한 최소 거리 찾기
+            min_distance = min((float(dist_table[i][j]) for j in range(num_cities) if j != i and not new_visited[j]), default=0)
+            min_distances.append(min_distance)
+
+    # 방문하지 않은 노드 중 자신을 제외한 최소 거리의 합
+    return sum(min_distances)

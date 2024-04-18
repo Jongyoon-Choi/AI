@@ -1,25 +1,19 @@
-import csv
-from utils import distance
-from utils import get_pos
-from utils import save_csv
+from utils import load_csv, save_csv, distance, get_pos
 from search_methods.greedy import greedy
 from search_methods.UCS import UCS
 from search_methods.A_star import A_star
 
-cities = []
+# 좌표를 불러와서 리스트로 저장
+cities = load_csv('TSP.csv')
+
+# 결과 초기화
 sol = []
 
-with open('TSP.csv', mode='r', newline='') as tsp:
-
-    reader = csv.reader(tsp)
-    for row in reader:
-        cities.append(row)
-
 # 방문할 도시 수
-num_cities=1000
+num_cities=20
 
 # 탐색 방법
-search_method='greedy'
+search_method='A_star'
 
 # Search
 if search_method=='UCS':
@@ -30,7 +24,7 @@ elif search_method=='A_star':
     sol= A_star(cities[:num_cities])
 
 # save as csv
-save_csv(sol, f'{search_method}_{num_cities}.csv')
+save_csv(sol, f'solutions/{search_method}_{num_cities}.csv')
 
 total_cost = 0
 

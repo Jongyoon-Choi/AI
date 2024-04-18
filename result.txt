@@ -1,17 +1,17 @@
 num_cities=10
 greedy: 10, 2.81
 UCS: 15201, 2.81 (방문 노드수, 최종 cost)
-A_star: 221, 3.18
+A_star: 100,2.88
 
 num_cities=15
 greedy: 15, 3.11
 UCS: ?
-A_star: 220321, 3.67
+A_star: 14791, 3.06
 
 num_cities=20
 greedy: 20, 3.40
 UCS: ?
-A_star: ?
+A_star: 568422, 3.14
 
 
 
