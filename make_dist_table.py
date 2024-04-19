@@ -2,7 +2,7 @@ import pandas as pd
 from utils import load_csv, distance, get_pos
 
 # 좌표를 불러와서 리스트로 저장
-cities = load_csv('TSV.csv')
+cities = load_csv('2024_AI_TSP.csv')
 
 # 거리 테이블 초기화
 distance_table = []

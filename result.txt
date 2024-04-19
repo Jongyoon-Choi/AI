@@ -8,6 +8,7 @@ num_cities=15
 greedy: 15, 3.72
 UCS: ?
 A_star: 53291, 3.45
+GA: 50000, 3.91
 
 num_cities=20
 greedy: 20, 3.76
@@ -23,4 +24,4 @@ A_star: 568422, 3.63 (휴리스틱 2번 사용)
 num_cities=1000
 greedy: 1000, 27.18
 A_star: ?, 199.83
-
+GA: 1000 세대 약 2분 소요
