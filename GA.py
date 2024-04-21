@@ -3,13 +3,19 @@ import matplotlib.pyplot as plt
 import numpy as np
 from utils import load_csv, save_csv
 
+# 랜덤 시드 설정
+random.seed(42)
 
-POPULATION_SIZE = 16	# 개체 집단의 크기
+POPULATION_SIZE = 40	# 개체 집단의 크기
 MUTATION_RATE = 0.2	# 돌연 변이 확률
-SIZE = 10			# 하나의 염색체에서 유전자 개수		
-dist_table=load_csv('distance.csv')[0:SIZE] # 행 슬라이싱
-dist_table=[row[0:SIZE] for row in dist_table] # 열 슬라이싱
-TARGET_VAL = 3.38
+SIZE = 20			# 하나의 염색체에서 유전자 개수		
+TARGET_VAL = 3.7
+
+# dist_table 슬라이싱
+dist_table = load_csv('distance.csv')[0:SIZE] # 행 슬라이싱
+dist_table = [row[0:SIZE] for row in dist_table] # 열 슬라이싱
+
+greedy_solution = load_csv('solutions\greedy_20.csv')
 
 # 최단 경로 : [0, 9, 4, 3, 8, 2, 7, 1, 6, 5]
 # 최단 거리 : 3.38    # 최단 거리 X greedy 값
@@ -19,9 +25,13 @@ class Chromosome:
         self.genes = g
         self.fitness = 0		
         if self.genes.__len__()==0:	
+            # 랜덤 초기화
             temp_list = list(range(1, SIZE))
             random.shuffle(temp_list)
             self.genes = temp_list.copy()
+            # # greedy_solution으로 초기화
+            # temp_list = [int(element) for row in greedy_solution for element in row]
+            # self.genes = temp_list[1:].copy() # 시작점 생략
         
     def cal_fitness(self):		# 적합도를 계산
         global dist_table
@@ -35,7 +45,7 @@ class Chromosome:
             prev_node = node
         value += float(dist_table[self.genes[-1]][0])
 
-        self.fitness = TARGET_VAL * 2 - value if TARGET_VAL * 2 - value > 0 else 1
+        self.fitness = value if value < TARGET_VAL * 4 else TARGET_VAL * 4
         return self.fitness
 
     def __str__(self):
@@ -47,34 +57,35 @@ class Chromosome:
 def print_p(pop):
     i = 0
     for x in pop:
-        print("염색체 #", i, "=", x, "적합도=", x.fitness)
+        print(f"염색체 #{i} = {x} 적합도={x.fitness:.2f}")
+        # print(f"염색체 #{i} 적합도={x.fitness:.2f}")
         i += 1
     print("")
 
 # 선택 연산
 def select(pop):
-    max_value  = sum([c.cal_fitness() for c in population])
+    max_value  = sum([TARGET_VAL * 4 - c.cal_fitness() + 0.001 for c in population])
     pick    = random.uniform(0, max_value)
     current = 0
     
     for c in pop:
-        current += c.cal_fitness()
+        current += (TARGET_VAL * 4 - c.cal_fitness() + 0.001)
         if current > pick:
             return c
 
-# 교차 연산
+# 교차 연산 
 def crossover(pop):
     father = select(pop)
     mother = select(pop)
-    length = random.randint(1, SIZE - 1)
-    idx = random.randint(0, SIZE - length)
+    length = random.randint(1, SIZE - 2)    #교차 길이
+    idx = random.randint(0, SIZE - length -1)  #교차 시작 index
 
     t_child1 = mother.genes[idx:idx + length].copy()
     t_child2 = father.genes[idx:idx + length].copy()
 
     child1 = list(filter(lambda x: not x in t_child1,father.genes))
     child2 = list(filter(lambda x: not x in t_child2,mother.genes))
-
+    
     child1 = child1[:idx] + t_child1 + child1[idx:]
     child2 = child2[:idx] + t_child2 + child2[idx:]
 
@@ -83,8 +94,24 @@ def crossover(pop):
 # 돌연변이 연산
 def mutate(c):
     if random.random() < MUTATION_RATE:
-        x, y = random.sample(list(range(0,SIZE-1)),2)
-        c.genes[y], c.genes[x] = c.genes[x], c.genes[y]
+        # x, y = random.sample(list(range(0,SIZE-1)),2)
+        # c.genes[y], c.genes[x] = c.genes[x], c.genes[y]
+
+        # 겹치지 않는 5개의 정수를 담을 리스트
+        mutate_idx = []
+
+        # (SIZE // 5) 개의 겹치지 않는 리스트 생성
+        while len(mutate_idx) < SIZE // 5:
+            # 0부터 SIZE - 1 사이의 임의의 정수를 생성
+            idx = random.randint(0, SIZE - 2)
+            # 생성된 정수가 리스트에 없다면 추가
+            if idx not in mutate_idx:
+                mutate_idx.append(idx)
+        # mutate_idx에 해당하는 원소들을 한 칸씩 앞으로 이동
+        temp = c.genes[mutate_idx[0]]
+        for i in range(len(mutate_idx)-1):
+            c.genes[mutate_idx[i]]=c.genes[mutate_idx[i+1]]
+        c.genes[mutate_idx[-1]] = temp
 
 # 메인 프로그램
 population = []
@@ -92,20 +119,19 @@ i=0
 fitness_list = []
 
 # 초기 염색체를 생성하여 객체 집단에 추가한다. 
-while i<POPULATION_SIZE:
+for _ in range(POPULATION_SIZE):
     population.append(Chromosome())
-    i += 1
 
 count=0
-population.sort(key=lambda x: x.cal_fitness(),reverse=True)
+population.sort(key=lambda x: x.cal_fitness())
 print("세대 번호=", count)
 print_p(population)
 count=1
 
 max_fitness = 0
 
-while population[0].fitness < TARGET_VAL:
-    if population[0].fitness > max_fitness:
+while population[0].fitness > TARGET_VAL:
+    if population[0].fitness < max_fitness:
         MUTATION_RATE = MUTATION_RATE * 0.9
         max_fitness = population[0].fitness
     new_pop = []
@@ -124,12 +150,12 @@ while population[0].fitness < TARGET_VAL:
     for c in population: mutate(c)
 
     # 출력을 위한 정렬
-    population.sort(key=lambda x: x.cal_fitness(),reverse=True)
+    population.sort(key=lambda x: x.cal_fitness())
     fitness_list.append(population[0].fitness)
     print("세대 번호=", count)
     print_p(population)
     count += 1
-    if count > 1000 : break
+    if count > 2000 : break
 
 # save as csv
 sol=[0]+population[0].to_list()
