@@ -6,10 +6,10 @@ from utils import load_csv, save_csv
 
 POPULATION_SIZE = 16	# 개체 집단의 크기
 MUTATION_RATE = 0.2	# 돌연 변이 확률
-SIZE = 1000			# 하나의 염색체에서 유전자 개수		
+SIZE = 10			# 하나의 염색체에서 유전자 개수		
 dist_table=load_csv('distance.csv')[0:SIZE] # 행 슬라이싱
 dist_table=[row[0:SIZE] for row in dist_table] # 열 슬라이싱
-TARGET_VAL = 27.18
+TARGET_VAL = 3.38
 
 # 최단 경로 : [0, 9, 4, 3, 8, 2, 7, 1, 6, 5]
 # 최단 거리 : 3.38    # 최단 거리 X greedy 값

@@ -1,3 +1,4 @@
+# 과제 폴더에 있던 코드
 import numpy as np 
 import csv
 

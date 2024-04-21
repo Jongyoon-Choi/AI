@@ -1,5 +1,5 @@
 import pandas as pd
-from utils import load_csv, distance, get_pos
+from utils import load_csv, save_csv,  distance, get_pos
 
 # 좌표를 불러와서 리스트로 저장
 cities = load_csv('2024_AI_TSP.csv')
@@ -24,8 +24,4 @@ for i in range(num_cities):
             row.append(dist)
     distance_table.append(row)
 
-# 거리 테이블을 DataFrame으로 변환
-distance_df = pd.DataFrame(distance_table)
-
-# 거리 테이블을 CSV 파일로 저장
-distance_df.to_csv('distance.csv', index=False, header=False)
+save_csv(distance_table, 'distance.csv')

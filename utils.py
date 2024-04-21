@@ -1,4 +1,5 @@
 import numpy as np 
+import pandas as pd
 import csv
 
 def load_csv(filepath):
@@ -10,10 +11,11 @@ def load_csv(filepath):
     return res
 
 def save_csv(sol,filepath):
-    with open(filepath, 'w', newline='') as csvfile:
-        writer = csv.writer(csvfile)
-        for city in sol:
-            writer.writerow([city])
+    # list를 DataFrame으로 변환
+    sorted_df = pd.DataFrame(sol)
+    
+    # Dataframe을 CSV 파일로 저장
+    sorted_df.to_csv(filepath, index=False, header=False)
             
 def distance(x, y):
     dist = np.linalg.norm(np.array(x)-np.array(y)) 
