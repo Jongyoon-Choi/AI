@@ -62,22 +62,22 @@ sorted_cities.insert(0, sorted_cities.pop(index))
 # csv 파일로 저장
 save_csv(sorted_cities, 'x_y_sorted_TSP.csv')
 
-# 시각화
-# x 좌표와 y 좌표를 따로 추출
-x_coords = [float(city[0]) for city in sorted_cities]
-y_coords = [float(city[1]) for city in sorted_cities]
+# # 시각화
+# # x 좌표와 y 좌표를 따로 추출
+# x_coords = [float(city[0]) for city in sorted_cities]
+# y_coords = [float(city[1]) for city in sorted_cities]
 
-# 10개씩 나누어서 시각화
-for i in range(num_chunk):
-    start_idx = i * chunk_size
-    end_idx = (i + 1) * chunk_size
-    plt.scatter(x_coords[start_idx:end_idx], y_coords[start_idx:end_idx], label=f'Chunk {i+1}')
+# # 10개씩 나누어서 시각화
+# for i in range(num_chunk*num_chunk):
+#     start_idx = i * num_chunk
+#     end_idx = (i + 1) * num_chunk
+#     plt.scatter(x_coords[start_idx:end_idx], y_coords[start_idx:end_idx], label=f'Chunk {i+1}')
 
-# 그래프에 레이블과 제목 추가
-plt.xlabel('X Coordinate')
-plt.ylabel('Y Coordinate')
-plt.title(f'Sorted Cities (Divided into {num_chunk} Chunks)')
-plt.legend()  # 범례 표시
+# # 그래프에 레이블과 제목 추가
+# plt.xlabel('X Coordinate')
+# plt.ylabel('Y Coordinate')
+# plt.title(f'Sorted Cities (Divided into {num_chunk} Chunks)')
+# plt.legend()  # 범례 표시
 
-# 그래프 표시
-plt.show()
+# # 그래프 표시
+# plt.show()

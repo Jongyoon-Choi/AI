@@ -23,5 +23,3 @@ num_cities=1000
 greedy: 1000, 27.18
 x_sorted: ?, 99.51
 x_y_sorted: ?, 29.93 
-
-425.28
