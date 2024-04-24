@@ -41,9 +41,9 @@ class Chromosome:
         prev_node = 0
         for i in range(SIZE - 1):
             node = self.genes[i]
-            value += float(dist_table[prev_node][node])
+            value += float(dist_table[prev_node][node]) # 각 거리의 연계
             prev_node = node
-        value += float(dist_table[self.genes[-1]][0])
+        value += float(dist_table[self.genes[-1]][0]) # 맨 마지막과 맨 앞을 연계
 
         self.fitness = value if value < TARGET_VAL * 4 else TARGET_VAL * 4
         return self.fitness
@@ -64,7 +64,7 @@ def print_p(pop):
 
 # 선택 연산
 def select(pop):
-    max_value  = sum([TARGET_VAL * 4 - c.cal_fitness() + 0.001 for c in population])
+    max_value  = sum([TARGET_VAL * 4 - c.cal_fitness() + 0.001 for c in population]) #우리는 적합도가 낮아질수록 유리해지기 때문에 해당 방식을 사용하였다.
     pick    = random.uniform(0, max_value)
     current = 0
     
@@ -74,20 +74,47 @@ def select(pop):
             return c
 
 # 교차 연산 
+# def crossover(pop):
+#     father = select(pop)
+#     mother = select(pop)
+#     length = random.randint(1, SIZE - 2)    #교차 길이
+#     idx = random.randint(0, SIZE - length -1)  #교차 시작 index
+
+#     t_child1 = mother.genes[idx:idx + length].copy() # idx에서 length 만큼 추가적으로 계산한다.
+#     t_child2 = father.genes[idx:idx + length].copy()
+
+#     child1 = list(filter(lambda x: not x in t_child1,father.genes)) #t_child에서 없는 수 만큼을 선택한다.
+#     child2 = list(filter(lambda x: not x in t_child2,mother.genes))
+    
+#     child1 = child1[:idx] + t_child1 + child1[idx:]
+#     child2 = child2[:idx] + t_child2 + child2[idx:]
+
+#     return (child1, child2)
+
+# 사이클 교차 연산
 def crossover(pop):
     father = select(pop)
     mother = select(pop)
-    length = random.randint(1, SIZE - 2)    #교차 길이
-    idx = random.randint(0, SIZE - length -1)  #교차 시작 index
+    n = SIZE-1
+    cycle_start1 = 0
+    cycle_start2 = 0
+    child1 = [-1] * n
+    child2 = [-1] * n
 
-    t_child1 = mother.genes[idx:idx + length].copy()
-    t_child2 = father.genes[idx:idx + length].copy()
-
-    child1 = list(filter(lambda x: not x in t_child1,father.genes))
-    child2 = list(filter(lambda x: not x in t_child2,mother.genes))
-    
-    child1 = child1[:idx] + t_child1 + child1[idx:]
-    child2 = child2[:idx] + t_child2 + child2[idx:]
+    while True:
+        cycle_end1 = cycle_start1
+        cycle_end2 = cycle_start2
+        while child1[cycle_end1] == -1:
+            child1[cycle_end1] = father.genes[cycle_end1]
+            cycle_end1 = father.genes.index(mother.genes[cycle_end1])
+        while child2[cycle_end2] == -1:
+            child2[cycle_end2] =  mother.genes[cycle_end2]
+            cycle_end2 = mother.genes.index(father.genes[cycle_end2])
+        
+        cycle_start1 = (cycle_end1 + 1) % n
+        cycle_start2 = (cycle_end2 + 1) % n
+        if -1 not in child1 and -1 not in child2:
+            break
 
     return (child1, child2)
     
