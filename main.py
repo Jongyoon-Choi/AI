@@ -6,8 +6,8 @@ from search_methods.A_star import A_star
 # 도시별 거리 테이블을 불러와서 리스트로 저장
 dist_table= load_csv('distance.csv')
 
-# 정렬된 도시 리스트를 저장
-sorted_cities = load_csv('x_sorted_TSP.csv')
+# 도시 리스트를 저장
+cities = load_csv('x_y_sorted_TSP.csv')
 
 # 결과 초기화
 sol = []
@@ -27,9 +27,9 @@ elif search_method=='sub_A_star':
     # subtree 반복 탐색 방법 (A*)
     subtree_list = []
 
-    # subtree_size만큼 분할하여 subtree_list 생성
-    for i in range(0, len(sorted_cities), num_cities):
-        subtree =  [int(row[2]) for row in sorted_cities[i:i+num_cities]]
+    # subtree size만큼 분할하여 subtree_list 생성
+    for i in range(0, len(cities), num_cities):
+        subtree =  [int(row[2]) for row in cities[i:i+num_cities if i+num_cities<len(cities) else len(cities)]] 
         subtree_list.append(subtree)
 
     # 각 subtree 탐색

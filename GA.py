@@ -6,20 +6,17 @@ from utils import load_csv, save_csv
 # 랜덤 시드 설정
 random.seed(42)
 
-POPULATION_SIZE = 30	# 개체 집단의 크기
-# 돌연변이 확률을 낮출수록 더 성능이 좋아진다 (노드가 많을수록 돌연변이로 좋은 해가 탄생하기 힘들기 때문?)
-MUTATION_RATE = 0.05	# 돌연 변이 확률
+POPULATION_SIZE = 40	# 개체 집단의 크기
+# 돌연변이 확률을 낮출수록 더 성능이 좋아진다 (노드가 많을수록 돌연변이로 좋은 해가 탄생하기 힘들기 때문? or local optimal에 도달하지도 못해서??)
+MUTATION_RATE = 0.2	# 돌연 변이 확률
 SIZE = 1000			# 하나의 염색체에서 유전자 개수		
-TARGET_VAL = 3.7
+TARGET_VAL = 30
 
 # dist_table 슬라이싱
 dist_table = load_csv('distance.csv')[0:SIZE] # 행 슬라이싱
 dist_table = [row[0:SIZE] for row in dist_table] # 열 슬라이싱
 
-greedy_solution = load_csv('solutions\greedy_20.csv')
-
-# 최단 경로 : [0, 9, 4, 3, 8, 2, 7, 1, 6, 5]
-# 최단 거리 : 3.38    # 최단 거리 X greedy 값
+greedy_solution = load_csv('solutions\greedy_1000.csv')
 
 class Chromosome:
     def __init__(self, g = []):
@@ -47,8 +44,8 @@ class Chromosome:
             prev_node = node
         value += float(dist_table[self.genes[-1]][0]) # 맨 마지막과 맨 앞을 연계
 
-        # 목표 cost보다 4배 이상 크면 TARGET_VAL * 4
-        self.fitness = value if value < TARGET_VAL * 4 else TARGET_VAL * 4
+        # 목표 cost의 제곱 이상이면 TARGET_VAL * TARGET_VAL
+        self.fitness = value if value < TARGET_VAL ** 2 else TARGET_VAL ** 2
         return self.fitness
 
     def __str__(self):
@@ -60,23 +57,23 @@ class Chromosome:
 def print_p(pop):
     i = 0
     for x in pop:
-        print(f"염색체 #{i} = {x} 적합도={x.fitness:.2f}")
-        # print(f"염색체 #{i} 적합도={x.fitness:.2f}")
+        # print(f"염색체 #{i} = {x} 적합도={x.fitness:.2f}")
+        print(f"염색체 #{i} 적합도={x.fitness:.2f}")
         i += 1
     print("")
 
 # 선택 연산
 def select(pop):
-    max_value  = sum([TARGET_VAL * 4 - c.cal_fitness() + 0.001 for c in population]) #우리는 적합도가 낮아질수록 유리해지기 때문에 해당 방식을 사용하였다.
+    max_value  = sum([TARGET_VAL ** 2 - c.cal_fitness() + 0.001 for c in population]) #우리는 적합도가 낮아질수록 유리해지기 때문에 해당 방식을 사용하였다.
     pick    = random.uniform(0, max_value)
     current = 0
     
     for c in pop:
-        current += (TARGET_VAL * 4 - c.cal_fitness() + 0.001)
+        current += (TARGET_VAL ** 2 - c.cal_fitness() + 0.001)
         if current > pick:
             return c
 
-# 교차 연산 
+# 교차 연산 (ordered crossover?)
 # def crossover(pop):
 #     father = select(pop)
 #     mother = select(pop)
@@ -184,7 +181,7 @@ while population[0].fitness > TARGET_VAL:
     print("세대 번호=", count)
     print_p(population)
     count += 1
-    if count > 500 : break
+    if count > 300 : break
 
 # save as csv
 sol=[0]+population[0].to_list()
