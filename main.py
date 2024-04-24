@@ -7,7 +7,7 @@ from search_methods.A_star import A_star
 dist_table= load_csv('distance.csv')
 
 # 정렬된 도시 리스트를 저장
-sorted_cities = load_csv('sorted_TSP.csv')
+sorted_cities = load_csv('x_sorted_TSP.csv')
 
 # 결과 초기화
 sol = []

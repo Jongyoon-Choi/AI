@@ -6,9 +6,10 @@ from utils import load_csv, save_csv
 # 랜덤 시드 설정
 random.seed(42)
 
-POPULATION_SIZE = 40	# 개체 집단의 크기
-MUTATION_RATE = 0.2	# 돌연 변이 확률
-SIZE = 20			# 하나의 염색체에서 유전자 개수		
+POPULATION_SIZE = 30	# 개체 집단의 크기
+# 돌연변이 확률을 낮출수록 더 성능이 좋아진다 (노드가 많을수록 돌연변이로 좋은 해가 탄생하기 힘들기 때문?)
+MUTATION_RATE = 0.05	# 돌연 변이 확률
+SIZE = 1000			# 하나의 염색체에서 유전자 개수		
 TARGET_VAL = 3.7
 
 # dist_table 슬라이싱
@@ -37,7 +38,8 @@ class Chromosome:
         global dist_table
         self.fitness = 0
         value = 0
-
+        
+        # 실제 cost를 적합도로 사용
         prev_node = 0
         for i in range(SIZE - 1):
             node = self.genes[i]
@@ -45,6 +47,7 @@ class Chromosome:
             prev_node = node
         value += float(dist_table[self.genes[-1]][0]) # 맨 마지막과 맨 앞을 연계
 
+        # 목표 cost보다 4배 이상 크면 TARGET_VAL * 4
         self.fitness = value if value < TARGET_VAL * 4 else TARGET_VAL * 4
         return self.fitness
 
@@ -115,7 +118,6 @@ def crossover(pop):
         cycle_start2 = (cycle_end2 + 1) % n
         if -1 not in child1 and -1 not in child2:
             break
-
     return (child1, child2)
     
 # 돌연변이 연산
@@ -182,7 +184,7 @@ while population[0].fitness > TARGET_VAL:
     print("세대 번호=", count)
     print_p(population)
     count += 1
-    if count > 2000 : break
+    if count > 500 : break
 
 # save as csv
 sol=[0]+population[0].to_list()
