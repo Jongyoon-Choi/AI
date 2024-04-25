@@ -91,7 +91,11 @@ def select(pop):
 
 #     return (child1, child2)
 
+
+
 """
+#PMX 교차연산
+
 def crossover(pop):
   
     parent1 = select(pop)
