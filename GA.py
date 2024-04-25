@@ -91,8 +91,55 @@ def select(pop):
 
 #     return (child1, child2)
 
+"""
+def crossover(pop):
+  
+    parent1 = select(pop)
+    parent2 = select(pop)
+   
+    idx1 = random.randint(0, SIZE - 2)
+    idx2 = random.randint(0, SIZE - 2)
+    
+    idx1,idx2 = sorted((idx1, idx2))
+    
+    if idx2 == idx1:
+        idx2 += 1   
+
+    child1 = [-1] * (SIZE - 1)
+    child2 = [-1] * (SIZE - 1)
+    
+    for i in range(idx1, idx2):
+        
+        child1[i] = parent2.genes[i]
+        child2[i] = parent1.genes[i]
+
+    for i in range(SIZE - 1):
+        
+        if i < idx1 or i >= idx2:
+            
+            gene = parent1.genes[i]
+            
+            while gene in child1[idx1:idx2]:
+                
+                index = parent2.genes.index(gene)
+                gene = parent1.genes[index]
+                
+            child1[i] = gene
+
+            gene = parent2.genes[i]
+            
+            while gene in child2[idx1:idx2]:
+                
+                index = parent1.genes.index(gene)
+                gene = parent2.genes[index]
+                
+            child2[i] = gene
+
+    return child1, child2
+"""
 # 사이클 교차 연산
 def crossover(pop):
+
     father = select(pop)
     mother = select(pop)
     n = SIZE-1
