@@ -2,7 +2,7 @@ from utils import load_csv, save_csv
 from search_methods.greedy import greedy
 from search_methods.A_star import A_star
 
-# 2024_AI_TSP.csv 파일을 이용한 dist_table(1000 x 1000)을 사용하였음.
+# 2024_AI_TSP.csv 파일을 이용한 dist_table(998 x 998)을 사용하였음.
 # 도시별 거리 테이블을 불러와서 리스트로 저장
 dist_table= load_csv('distance.csv')
 
@@ -25,6 +25,7 @@ elif search_method=='A_star':
     sol += A_star(dist_table, [i for i in range(num_cities)])   # num_cities개의 도시만 탐색
 elif search_method=='sub_A_star':
     # subtree 반복 탐색 방법 (A*)
+    # num_cities와 num_chunk를 조절하여 성능 개선 가능
     subtree_list = []
 
     # subtree size만큼 분할하여 subtree_list 생성

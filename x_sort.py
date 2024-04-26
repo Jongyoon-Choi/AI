@@ -11,7 +11,7 @@ for i in range(len(cities)):
 cities.sort(key=lambda city: float(city[0]))
 
 # 도시 리스트에서 시작점 찾기
-index = cities.index(['-0.0','0.0',0])
+index = cities.index(['0','0',0])
 
 # 찾은 도시를 맨 앞으로 이동시키기
 cities.insert(0, cities.pop(index))
