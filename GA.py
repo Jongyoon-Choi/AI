@@ -94,20 +94,51 @@ def select(pop):
 
 
 """
-#PMX 교차연산
+# 인접인자교차연산 
+인접인자 기준: 가까운 노드
+
+def crossover(pop):
+    parent1 = select(pop)
+    parent2 = select(pop)
+    
+    child1 = [-1] * (SIZE - 1)
+    child2 = [-1] * (SIZE - 1)
+    
+    # 중복없는 인덱스를 생성하여 인접한 유전자 선택
+    idx = sorted(random.sample(range(2, SIZE - 2), 5))  
+    
+    for i in range(SIZE - 1):
+        child1[i] = parent1.genes[i]
+        child2[i] = parent2.genes[i]
+    
+    for i in idx:
+        child1[i], child1[i+1] = child1[i+1], child1[i]
+        child1[i-2], child1[i-1] = child1[i-1], child1[i-2]
+        
+        child2[i], child2[i+1] = child2[i+1], child2[i]
+        child2[i-2], child2[i-1] = child2[i-1], child2[i-2]
+        
+    return (child1, child2)
+
+"""
+
+"""
+PMX 교차 연산
 
 def crossover(pop):
   
     parent1 = select(pop)
     parent2 = select(pop)
+    
    
-    idx1 = random.randint(0, SIZE - 2)
-    idx2 = random.randint(0, SIZE - 2)
+    idx1 = random.randint(1, SIZE - 2)
+    idx2 = random.randint(1, SIZE - 2)
     
     idx1,idx2 = sorted((idx1, idx2))
     
     if idx2 == idx1:
         idx2 += 1   
+        idx1 -= 1
 
     child1 = [-1] * (SIZE - 1)
     child2 = [-1] * (SIZE - 1)
@@ -139,8 +170,81 @@ def crossover(pop):
                 
             child2[i] = gene
 
-    return child1, child2
+    return (child1, child2) 
 """
+
+"""
+# 위치기반 교차 연산
+def crossover(pop):
+    parent1 = select(pop)
+    parent2 = select(pop)
+    
+    idx = sorted(random.sample(range(0, SIZE-1), 17))
+    
+    child1 = [-1] * (SIZE - 1)
+    child2 = [-1] * (SIZE - 1)
+    
+    parent1_copy = parent1.genes.copy()
+    parent2_copy = parent2.genes.copy()
+   
+    for i in idx:
+        
+        child1[i] = parent2.genes[i]
+        child2[i] = parent1.genes[i]
+        
+        parent1_copy.remove(parent2.genes[i])
+        parent2_copy.remove(parent1.genes[i])
+        
+    # 나머지 유전자 추가
+    for i in range(SIZE - 1):
+        if child1[i] == -1:
+            child1[i] = parent1_copy.pop(0)
+        if child2[i] == -1:
+            child2[i] = parent2_copy.pop(0)
+            
+    return (child1, child2)
+"""
+
+"""
+#균등순서기반교차
+
+def crossover(pop):
+    
+    parent1 = select(pop)
+    parent2 = select(pop)
+    
+    child1 = [-1] * (SIZE - 1)
+    child2 = [-1] * (SIZE - 1)
+    
+    
+    crossover_points = random.sample(range(SIZE - 1), 17)
+    
+    
+    for i in crossover_points:
+        child1[i] = parent1.genes[i]
+        child2[i] = parent2.genes[i]
+    
+    
+    idx1 = 0
+    idx2 = 0
+    
+    for i in range(SIZE - 1):
+        
+        if child1[i] == -1:
+            while parent2.genes[idx2] in child1:
+                idx2 += 1
+            child1[i] = parent2.genes[idx2]
+            idx2 += 1
+            
+        if child2[i] == -1:
+            while parent1.genes[idx1] in child2:
+                idx1 += 1
+            child2[i] = parent1.genes[idx1]
+            idx1 += 1
+    
+    return (child1, child2)
+"""
+
 # 사이클 교차 연산
 def crossover(pop):
 
