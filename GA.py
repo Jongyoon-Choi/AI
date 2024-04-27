@@ -2,21 +2,25 @@ import random
 import matplotlib.pyplot as plt
 import numpy as np
 from utils import load_csv, save_csv
+from GA_crossover.order import order_crossover
+from GA_crossover.position_based import positon_based_crossover
+from GA_crossover.uniform_order_based import uniform_order_based_crossover
+from GA_crossover.PMX import pmx_crossover
+from GA_crossover.cycle import cycle_crossover
+from GA_crossover.edge_recom import edge_recom_crossover
 
 # 랜덤 시드 설정
 random.seed(42)
 
 POPULATION_SIZE = 40	# 개체 집단의 크기
-# 돌연변이 확률을 낮출수록 더 성능이 좋아진다 (노드가 많을수록 돌연변이로 좋은 해가 탄생하기 힘들기 때문? or local optimal에 도달하지도 못해서??)
 MUTATION_RATE = 0.2	# 돌연 변이 확률
-SIZE = 1000			# 하나의 염색체에서 유전자 개수		
-TARGET_VAL = 30
+SIZE = 20			# 하나의 염색체에서 유전자 개수		
+TARGET_VAL = 4
+MAX_FITNESS = 7.5
 
 # dist_table 슬라이싱
 dist_table = load_csv('distance.csv')[0:SIZE] # 행 슬라이싱
 dist_table = [row[0:SIZE] for row in dist_table] # 열 슬라이싱
-
-greedy_solution = load_csv('solutions\greedy_1000.csv')
 
 class Chromosome:
     def __init__(self, g = []):
@@ -27,9 +31,6 @@ class Chromosome:
             temp_list = list(range(1, SIZE))
             random.shuffle(temp_list)
             self.genes = temp_list.copy()
-            # # greedy_solution으로 초기화
-            # temp_list = [int(element) for row in greedy_solution for element in row]
-            # self.genes = temp_list[1:].copy() # 시작점 생략
         
     def cal_fitness(self):		# 적합도를 계산
         global dist_table
@@ -44,250 +45,30 @@ class Chromosome:
             prev_node = node
         value += float(dist_table[self.genes[-1]][0]) # 맨 마지막과 맨 앞을 연계
 
-        # 목표 cost의 제곱 이상이면 TARGET_VAL * TARGET_VAL
-        self.fitness = value if value < TARGET_VAL ** 2 else TARGET_VAL ** 2
+        # 목표 cost가 MAX_FITNESS 이상이면 MAX_FITNESS
+        self.fitness = value if value < MAX_FITNESS else MAX_FITNESS
         return self.fitness
 
     def __str__(self):
         return self.genes.__str__()
     
-    def to_list(self):
-        return self.genes
+    def __len__(self):
+        return len(self.genes)
 
 def print_p(pop):
     i = 0
     for x in pop:
-        # print(f"염색체 #{i} = {x} 적합도={x.fitness:.2f}")
-        print(f"염색체 #{i} 적합도={x.fitness:.2f}")
+        print(f"염색체 #{i} = {x} 적합도={x.fitness:.2f}")
+        # print(f"염색체 #{i} 적합도={x.fitness:.2f}")
         i += 1
     print("")
 
-# 선택 연산
-def select(pop):
-    max_value  = sum([TARGET_VAL ** 2 - c.cal_fitness() + 0.001 for c in population]) #우리는 적합도가 낮아질수록 유리해지기 때문에 해당 방식을 사용하였다.
-    pick    = random.uniform(0, max_value)
-    current = 0
-    
-    for c in pop:
-        current += (TARGET_VAL ** 2 - c.cal_fitness() + 0.001)
-        if current > pick:
-            return c
-
-# 교차 연산 (ordered crossover?)
-# def crossover(pop):
-#     father = select(pop)
-#     mother = select(pop)
-#     length = random.randint(1, SIZE - 2)    #교차 길이
-#     idx = random.randint(0, SIZE - length -1)  #교차 시작 index
-
-#     t_child1 = mother.genes[idx:idx + length].copy() # idx에서 length 만큼 추가적으로 계산한다.
-#     t_child2 = father.genes[idx:idx + length].copy()
-
-#     child1 = list(filter(lambda x: not x in t_child1,father.genes)) #t_child에서 없는 수 만큼을 선택한다.
-#     child2 = list(filter(lambda x: not x in t_child2,mother.genes))
-    
-#     child1 = child1[:idx] + t_child1 + child1[idx:]
-#     child2 = child2[:idx] + t_child2 + child2[idx:]
-
-#     return (child1, child2)
-
-
-
-"""
-# 인접인자교차연산 
-인접인자 기준: 가까운 노드
-
-def crossover(pop):
-    parent1 = select(pop)
-    parent2 = select(pop)
-    
-    child1 = [-1] * (SIZE - 1)
-    child2 = [-1] * (SIZE - 1)
-    
-    # 중복없는 인덱스를 생성하여 인접한 유전자 선택
-    idx = sorted(random.sample(range(2, SIZE - 2), 5))  
-    
-    for i in range(SIZE - 1):
-        child1[i] = parent1.genes[i]
-        child2[i] = parent2.genes[i]
-    
-    for i in idx:
-        child1[i], child1[i+1] = child1[i+1], child1[i]
-        child1[i-2], child1[i-1] = child1[i-1], child1[i-2]
-        
-        child2[i], child2[i+1] = child2[i+1], child2[i]
-        child2[i-2], child2[i-1] = child2[i-1], child2[i-2]
-        
-    return (child1, child2)
-
-"""
-
-"""
-PMX 교차 연산
-
-def crossover(pop):
-  
-    parent1 = select(pop)
-    parent2 = select(pop)
-    
-   
-    idx1 = random.randint(1, SIZE - 2)
-    idx2 = random.randint(1, SIZE - 2)
-    
-    idx1,idx2 = sorted((idx1, idx2))
-    
-    if idx2 == idx1:
-        idx2 += 1   
-        idx1 -= 1
-
-    child1 = [-1] * (SIZE - 1)
-    child2 = [-1] * (SIZE - 1)
-    
-    for i in range(idx1, idx2):
-        
-        child1[i] = parent2.genes[i]
-        child2[i] = parent1.genes[i]
-
-    for i in range(SIZE - 1):
-        
-        if i < idx1 or i >= idx2:
-            
-            gene = parent1.genes[i]
-            
-            while gene in child1[idx1:idx2]:
-                
-                index = parent2.genes.index(gene)
-                gene = parent1.genes[index]
-                
-            child1[i] = gene
-
-            gene = parent2.genes[i]
-            
-            while gene in child2[idx1:idx2]:
-                
-                index = parent1.genes.index(gene)
-                gene = parent2.genes[index]
-                
-            child2[i] = gene
-
-    return (child1, child2) 
-"""
-
-"""
-# 위치기반 교차 연산
-def crossover(pop):
-    parent1 = select(pop)
-    parent2 = select(pop)
-    
-    idx = sorted(random.sample(range(0, SIZE-1), 17))
-    
-    child1 = [-1] * (SIZE - 1)
-    child2 = [-1] * (SIZE - 1)
-    
-    parent1_copy = parent1.genes.copy()
-    parent2_copy = parent2.genes.copy()
-   
-    for i in idx:
-        
-        child1[i] = parent2.genes[i]
-        child2[i] = parent1.genes[i]
-        
-        parent1_copy.remove(parent2.genes[i])
-        parent2_copy.remove(parent1.genes[i])
-        
-    # 나머지 유전자 추가
-    for i in range(SIZE - 1):
-        if child1[i] == -1:
-            child1[i] = parent1_copy.pop(0)
-        if child2[i] == -1:
-            child2[i] = parent2_copy.pop(0)
-            
-    return (child1, child2)
-"""
-
-"""
-#균등순서기반교차
-
-def crossover(pop):
-    
-    parent1 = select(pop)
-    parent2 = select(pop)
-    
-    child1 = [-1] * (SIZE - 1)
-    child2 = [-1] * (SIZE - 1)
-    
-    
-    crossover_points = random.sample(range(SIZE - 1), 17)
-    
-    
-    for i in crossover_points:
-        child1[i] = parent1.genes[i]
-        child2[i] = parent2.genes[i]
-    
-    
-    idx1 = 0
-    idx2 = 0
-    
-    for i in range(SIZE - 1):
-        
-        if child1[i] == -1:
-            while parent2.genes[idx2] in child1:
-                idx2 += 1
-            child1[i] = parent2.genes[idx2]
-            idx2 += 1
-            
-        if child2[i] == -1:
-            while parent1.genes[idx1] in child2:
-                idx1 += 1
-            child2[i] = parent1.genes[idx1]
-            idx1 += 1
-    
-    return (child1, child2)
-"""
-
-# 사이클 교차 연산
-def crossover(pop):
-
-    father = select(pop)
-    mother = select(pop)
-    n = SIZE-1
-    cycle_start1 = 0
-    cycle_start2 = 0
-    child1 = [-1] * n
-    child2 = [-1] * n
-
-    while True:
-        cycle_end1 = cycle_start1
-        cycle_end2 = cycle_start2
-        while child1[cycle_end1] == -1:
-            child1[cycle_end1] = father.genes[cycle_end1]
-            cycle_end1 = father.genes.index(mother.genes[cycle_end1])
-        while child2[cycle_end2] == -1:
-            child2[cycle_end2] =  mother.genes[cycle_end2]
-            cycle_end2 = mother.genes.index(father.genes[cycle_end2])
-        
-        cycle_start1 = (cycle_end1 + 1) % n
-        cycle_start2 = (cycle_end2 + 1) % n
-        if -1 not in child1 and -1 not in child2:
-            break
-    return (child1, child2)
-    
 # 돌연변이 연산
 def mutate(c):
     if random.random() < MUTATION_RATE:
-        # x, y = random.sample(list(range(0,SIZE-1)),2)
-        # c.genes[y], c.genes[x] = c.genes[x], c.genes[y]
-
-        # 겹치지 않는 5개의 정수를 담을 리스트
-        mutate_idx = []
-
         # (SIZE // 5) 개의 겹치지 않는 리스트 생성
-        while len(mutate_idx) < SIZE // 5:
-            # 0부터 SIZE - 1 사이의 임의의 정수를 생성
-            idx = random.randint(0, SIZE - 2)
-            # 생성된 정수가 리스트에 없다면 추가
-            if idx not in mutate_idx:
-                mutate_idx.append(idx)
+        mutate_idx = random.sample(range(0, SIZE - 2), SIZE // 5)
+        
         # mutate_idx에 해당하는 원소들을 한 칸씩 앞으로 이동
         temp = c.genes[mutate_idx[0]]
         for i in range(len(mutate_idx)-1):
@@ -296,7 +77,6 @@ def mutate(c):
 
 # 메인 프로그램
 population = []
-i=0
 fitness_list = []
 
 # 초기 염색체를 생성하여 객체 집단에 추가한다. 
@@ -319,7 +99,7 @@ while population[0].fitness > TARGET_VAL:
 
     # 선택과 교차 연산
     for _ in range(POPULATION_SIZE//2):
-        c1, c2 = crossover(population)
+        c1, c2 = pmx_crossover(population)
         new_pop.append(Chromosome(c1))
         new_pop.append(Chromosome(c2))
 
@@ -336,10 +116,10 @@ while population[0].fitness > TARGET_VAL:
     print("세대 번호=", count)
     print_p(population)
     count += 1
-    if count > 300 : break
+    if count > 2000 : break
 
 # save as csv
-sol=[0]+population[0].to_list()
+sol=[0]+population[0].genes
 save_csv(sol, f'solutions/GA_{SIZE}.csv')
 
 
@@ -365,7 +145,13 @@ fit_y = x_minmax * fit_line[0] + fit_line[1]
 
 plt.plot(fitness_list,label='fitness')
 plt.plot(x_minmax, fit_y, color = 'red',label='regression')
+plt.text(0.5, 0.9, f'Regression: y = {fit_line[0]:.5f}x + {fit_line[1]:.2f}', 
+         horizontalalignment='center', verticalalignment='center', 
+         transform=plt.gca().transAxes, fontsize=10, color='red')
 plt.xlabel('generation number')
 plt.ylabel('fitness')
 plt.legend()
 plt.show()
+
+# 이미지 파일로 저장
+# plt.savefig('fitness_regression_plot.png')
