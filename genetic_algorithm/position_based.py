@@ -3,7 +3,7 @@
 """
 
 import random
-from GA_crossover.select import select
+from genetic_algorithm.select import select
 
 def positon_based_crossover(pop):
     father = select(pop)

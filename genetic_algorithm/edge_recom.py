@@ -3,7 +3,7 @@
 인접인자 기준: 가까운 노드
 """
 import random
-from GA_crossover.select import select
+from genetic_algorithm.select import select
 
 def edge_recom_crossover(pop):
     father = select(pop)

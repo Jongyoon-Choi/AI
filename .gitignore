@@ -2,6 +2,9 @@
 __pycache__/
 *.pyc
 
-#solutions에 저장되는 결과
+# solutions에 저장되는 결과
 solutions/
 *.csv
+
+# 시각화 저장 파일
+*.png
