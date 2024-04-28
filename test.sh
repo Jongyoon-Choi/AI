@@ -1,9 +1,8 @@
-python3 GA.py \
-    --POPULATION_SIZE 40 \
+python3 -u GA.py \
+    --POPULATION_SIZE 50 \
     --MUTATION_RATE 0.05 \
     --SIZE 998 \
-    --TARGET_VAL 100 \
-    --MAX_VAL 400 \
-    --max_iter 10 \
-    --crossover_name order \
-    --output_path GA_result/test
+    --MAX_VAL 420 \
+    --iteration 300 \
+    --crossover_name position_based \
+    --output_path GA_result/test > GA_result/test.log 2>&1

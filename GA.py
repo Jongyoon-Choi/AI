@@ -1,11 +1,12 @@
 import random
 import matplotlib.pyplot as plt
 import numpy as np
+from tqdm import tqdm
 from utils import save_csv
 from argparse import ArgumentParser
 from genetic_algorithm.chromosome import Chromosome
 from genetic_algorithm.order import order_crossover
-from genetic_algorithm.position_based import positon_based_crossover
+from genetic_algorithm.position_based import position_based_crossover
 from genetic_algorithm.uniform_order_based import uniform_order_based_crossover
 from genetic_algorithm.PMX import pmx_crossover
 from genetic_algorithm.cycle import cycle_crossover
@@ -26,9 +27,8 @@ def main(): # 메인 프로그램
     parser.add_argument("--POPULATION_SIZE", type=int, default=40, help="Population size")
     parser.add_argument("--MUTATION_RATE", type=float, default=0.05, help="Mutation rate")
     parser.add_argument("--SIZE", type=int, default=998, help="Number of genes in a chromosome")
-    parser.add_argument("--TARGET_VAL", type=int, default=100, help="Target fitness value")
     parser.add_argument("--MAX_VAL", type=float, default=400, help="Maximum fitness value")
-    parser.add_argument("--max_iter", type=int, default=1000, help="Maximum number of iterations")
+    parser.add_argument("--iteration", type=int, default=1000, help="Number of iterations")
     parser.add_argument("--crossover_name", type=str, default="order", help="Name of crossover function")
     parser.add_argument("--output_path", type=str, default="GA_result/test", help="output path")
 
@@ -40,12 +40,11 @@ def main(): # 메인 프로그램
     POPULATION_SIZE = args.POPULATION_SIZE	# 개체 집단의 크기
     MUTATION_RATE = args.MUTATION_RATE	# 돌연 변이 확률
     SIZE = args.SIZE			# 하나의 염색체에서 유전자 개수		
-    TARGET_VAL = args.TARGET_VAL
     MAX_VAL = args.MAX_VAL
     
     crossover_functions = {
         'order': order_crossover,
-        'positon_based': positon_based_crossover,
+        'position_based': position_based_crossover,
         'uniform_order_based': uniform_order_based_crossover,
         'pmx': pmx_crossover,
         'cycle': cycle_crossover,
@@ -59,15 +58,13 @@ def main(): # 메인 프로그램
     for _ in range(POPULATION_SIZE):
         population.append(Chromosome(size=SIZE))
 
-    count=0
     population.sort(key=lambda x: x.cal_fitness(MAX_VAL))
-    # print("세대 번호=", count)
+    # print("세대 번호=", 0)
     # print_p(population)
-    count=1
 
     max_fitness = 0
 
-    while population[0].fitness > TARGET_VAL:
+    for i in tqdm(range(args.iteration), desc='Progress'):
         if population[0].fitness < max_fitness:
             MUTATION_RATE = MUTATION_RATE * 0.9
             max_fitness = population[0].fitness
@@ -88,10 +85,8 @@ def main(): # 메인 프로그램
         # 출력을 위한 정렬
         population.sort(key=lambda x: x.cal_fitness(MAX_VAL))
         fitness_list.append(population[0].fitness)
-        # print("세대 번호=", count)
+        # print("세대 번호=", i+1)
         # print_p(population)
-        count += 1
-        if count > args.max_iter : break
 
     # # csv 파일로 저장 (파일명 변경 예정)
     # sol=[0]+population[0].genes

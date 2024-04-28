@@ -5,7 +5,7 @@
 import random
 from genetic_algorithm.select import select
 
-def positon_based_crossover(pop):
+def position_based_crossover(pop):
     father = select(pop)
     mother = select(pop)
 
