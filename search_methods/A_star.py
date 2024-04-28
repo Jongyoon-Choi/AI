@@ -28,7 +28,7 @@ def A_star(dist_table, search_idx, start = 0): # search_idx에 존재하는 inde
         # 모든 도시를 방문했을 경우 종료
         if len(path) == num_cities:
             sol=path
-            print(f'방문 노드 수: {count}')
+            # print(f'방문 노드 수: {count}')
             break
         
         
