@@ -7,8 +7,8 @@ from utils import load_csv
 
 class Chromosome:
     # dist_table 슬라이싱
-    dist_table = load_csv('distance.csv')[0:20] # 행 슬라이싱
-    dist_table = [row[0:20] for row in dist_table] # 열 슬라이싱
+    dist_table = load_csv('distance.csv')[0:998] # 행 슬라이싱
+    dist_table = [row[0:998] for row in dist_table] # 열 슬라이싱
 
     def __init__(self, g = [],  size = 998):
         self.genes = g

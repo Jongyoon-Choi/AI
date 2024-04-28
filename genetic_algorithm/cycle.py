@@ -6,7 +6,6 @@ import random
 from genetic_algorithm.select import select
 
 def cycle_crossover(pop):
-
     father = select(pop)
     mother = select(pop)
 
@@ -17,13 +16,14 @@ def cycle_crossover(pop):
 
     cycle_start = random.randint(0, chromosome_size -1)
 
-    visited = [-1] * chromosome_size
+    visited = [False] * chromosome_size
 
     point=cycle_start
 
-    while visited[point] == -1:
+    while not visited[point]:
         child1[point] = father.genes[point]
         child2[point] =  mother.genes[point]
+        visited[point] = True
         point = mother.genes.index(father.genes[point])
 
     return (child1, child2)

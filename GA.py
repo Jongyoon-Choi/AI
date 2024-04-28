@@ -1,7 +1,7 @@
 import random
 import matplotlib.pyplot as plt
 import numpy as np
-from utils import load_csv, save_csv
+from utils import save_csv
 from argparse import ArgumentParser
 from genetic_algorithm.chromosome import Chromosome
 from genetic_algorithm.order import order_crossover
@@ -25,11 +25,11 @@ def main(): # 메인 프로그램
 
     parser.add_argument("--POPULATION_SIZE", type=int, default=40, help="Population size")
     parser.add_argument("--MUTATION_RATE", type=float, default=0.05, help="Mutation rate")
-    parser.add_argument("--SIZE", type=int, default=20, help="Number of genes in a chromosome")
-    parser.add_argument("--TARGET_VAL", type=int, default=4, help="Target fitness value")
-    parser.add_argument("--MAX_VAL", type=float, default=7.5, help="Maximum fitness value")
-    parser.add_argument("--max_iter", type=int, default=2000, help="Maximum number of iterations")
-    parser.add_argument("--crossover_name", type=str, default="order_crossover", help="Name of crossover function")
+    parser.add_argument("--SIZE", type=int, default=998, help="Number of genes in a chromosome")
+    parser.add_argument("--TARGET_VAL", type=int, default=100, help="Target fitness value")
+    parser.add_argument("--MAX_VAL", type=float, default=400, help="Maximum fitness value")
+    parser.add_argument("--max_iter", type=int, default=1000, help="Maximum number of iterations")
+    parser.add_argument("--crossover_name", type=str, default="order", help="Name of crossover function")
     parser.add_argument("--output_path", type=str, default="GA_result/test", help="output path")
 
     args = parser.parse_args()
@@ -44,12 +44,12 @@ def main(): # 메인 프로그램
     MAX_VAL = args.MAX_VAL
     
     crossover_functions = {
-        'order_crossover': order_crossover,
-        'positon_based_crossover': positon_based_crossover,
-        'uniform_order_based_crossover': uniform_order_based_crossover,
-        'pmx_crossover': pmx_crossover,
-        'cycle_crossover': cycle_crossover,
-        'edge_recom_crossover': edge_recom_crossover
+        'order': order_crossover,
+        'positon_based': positon_based_crossover,
+        'uniform_order_based': uniform_order_based_crossover,
+        'pmx': pmx_crossover,
+        'cycle': cycle_crossover,
+        'edge_recom': edge_recom_crossover
     }
     
     population = []
@@ -61,8 +61,8 @@ def main(): # 메인 프로그램
 
     count=0
     population.sort(key=lambda x: x.cal_fitness(MAX_VAL))
-    print("세대 번호=", count)
-    print_p(population)
+    # print("세대 번호=", count)
+    # print_p(population)
     count=1
 
     max_fitness = 0
@@ -88,17 +88,17 @@ def main(): # 메인 프로그램
         # 출력을 위한 정렬
         population.sort(key=lambda x: x.cal_fitness(MAX_VAL))
         fitness_list.append(population[0].fitness)
-        print("세대 번호=", count)
-        print_p(population)
+        # print("세대 번호=", count)
+        # print_p(population)
         count += 1
         if count > args.max_iter : break
 
-    # csv 파일로 저장 (파일명 변경 예정)
-    sol=[0]+population[0].genes
-    save_csv(sol, f'solutions/GA_{SIZE}.csv')
+    # # csv 파일로 저장 (파일명 변경 예정)
+    # sol=[0]+population[0].genes
+    # save_csv(sol, f'solutions/GA_{SIZE}.csv')
 
-    # cost 출력
-    print(f'final cost: {population[0].fitness:.2f}')
+    # # cost 출력
+    # print(f'final cost: {population[0].fitness:.2f}')
 
 
     #시각화

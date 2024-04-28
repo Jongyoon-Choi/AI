@@ -11,7 +11,7 @@ def positon_based_crossover(pop):
 
     chromosome_size = len(father)
     
-    idx = sorted(random.sample(range(0, chromosome_size), 5))
+    idx = sorted(random.sample(range(0, chromosome_size), chromosome_size//20))
     
     child1 = [mother.genes[i] if i in idx else -1 for i in range(chromosome_size)]
     child2 = [father.genes[i] if i in idx else -1 for i in range(chromosome_size)]

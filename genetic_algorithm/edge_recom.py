@@ -15,7 +15,7 @@ def edge_recom_crossover(pop):
     child2 = mother.genes.copy()
     
     # 중복없는 인덱스를 생성하여 인접한 유전자 선택
-    idx = sorted(random.sample(range(2, chromosome_size - 1), 5))  
+    idx = sorted(random.sample(range(2, chromosome_size - 1), chromosome_size//20))  
     
     for i in idx:
         child1[i], child1[i+1] = child1[i+1], child1[i]

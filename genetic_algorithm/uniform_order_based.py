@@ -12,7 +12,7 @@ def uniform_order_based_crossover(pop):
 
     chromosome_size = len(father)
     
-    crossover_points = random.sample(range(chromosome_size), 17)
+    crossover_points = random.sample(range(chromosome_size), chromosome_size//20)
     
     child1 = [father.genes[i] if i in crossover_points else -1 for i in range(chromosome_size)]
     child2 = [mother.genes[i] if i in crossover_points else -1 for i in range(chromosome_size)]
