@@ -12,31 +12,33 @@ class Chromosome:
     dist_table = load_csv('distance.csv')[0:998] # 행 슬라이싱
     dist_table = [row[0:998] for row in dist_table] # 열 슬라이싱
 
-    def __init__(self, g = [], num_chunk = 10, size = 998, MAX_VAL = 420):
+    def __init__(self, g = [], num_chunk = -1, size = 998, MAX_VAL = 420):
         self.genes = g
         self.fitness = 0
         self.max_val = MAX_VAL
 
         if self.genes.__len__()==0:	
-            # 랜덤 초기화
-            # temp_list = list(range(1, size))
-            # random.shuffle(temp_list)
-            # self.genes = temp_list.copy()
+            if num_chunk == -1:
+                # 랜덤 초기화
+                temp_list = list(range(1, size))
+                random.shuffle(temp_list)
+                self.genes = temp_list.copy()
 
-            # chunk_sort_function를 사용한 A*
-            temp_list=[]
-            sorted_cities = chunk_sort_function(num_chunk)
-            subtree_list = []
-            subtree_size = 10
+            else:
+                # chunk_sort_function를 사용한 A*
+                temp_list=[]
+                sorted_cities = chunk_sort_function(num_chunk)
+                subtree_list = []
+                subtree_size = 10
 
-            for i in range(0, size, subtree_size):
-                subtree =  sorted_cities[i:i+subtree_size if i+subtree_size<size else size]
-                subtree_list.append(subtree)
+                for i in range(0, size, subtree_size):
+                    subtree =  sorted_cities[i:i+subtree_size if i+subtree_size<size else size]
+                    subtree_list.append(subtree)
 
-            # 각 subtree 탐색
-            for subtree in subtree_list:
-                temp_list += A_star(self.dist_table, subtree)
-            self.genes = temp_list[1:].copy() # 시작점 생략
+                # 각 subtree 탐색
+                for subtree in subtree_list:
+                    temp_list += A_star(self.dist_table, subtree)
+                self.genes = temp_list[1:].copy() # 시작점 생략
 
             
         

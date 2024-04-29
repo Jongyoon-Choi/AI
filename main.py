@@ -55,3 +55,5 @@ for idx in range(len(sol)-1):
 
 # 출력
 print(f'final cost: {total_cost:.2f}')
+
+

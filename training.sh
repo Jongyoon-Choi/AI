@@ -1,8 +1,8 @@
 POPULATION_SIZE=(50)
-MUTATION_RATE=(0.005 0.01 0.05) 
+MUTATION_RATE=(0.05) 
 SIZE=998
 MAX_VAL=420
-iteration=1000
+iteration=2000
 # crossover_name: order, position_based, uniform_order_based, pmx, cycle
 crossover_name=(cycle)
 

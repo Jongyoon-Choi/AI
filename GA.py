@@ -27,8 +27,8 @@ def main(): # 메인 프로그램
     parser.add_argument("--MUTATION_RATE", type=float, default=0.05, help="Mutation rate")
     parser.add_argument("--SIZE", type=int, default=998, help="Number of genes in a chromosome")
     parser.add_argument("--MAX_VAL", type=float, default=420, help="Maximum fitness value")
-    parser.add_argument("--iteration", type=int, default=100, help="Number of iterations")
-    parser.add_argument("--crossover_name", type=str, default="order", help="Name of crossover function")
+    parser.add_argument("--iteration", type=int, default=200, help="Number of iterations")
+    parser.add_argument("--crossover_name", type=str, default="cycle", help="Name of crossover function")
     parser.add_argument("--output_path", type=str, default="GA_result/test", help="output path")
 
     args = parser.parse_args()
@@ -53,30 +53,46 @@ def main(): # 메인 프로그램
     fitness_list = []
 
     # 초기 염색체를 생성하여 객체 집단에 추가한다. 
-    for i in range(POPULATION_SIZE):
+    for i in range(int(POPULATION_SIZE * 0.2)):
         population.append(Chromosome(num_chunk = i + 1 ,size = SIZE, MAX_VAL= MAX_VAL))
 
+    for _ in range(int(POPULATION_SIZE * 0.8)):
+        population.append(Chromosome(size = SIZE, MAX_VAL= MAX_VAL))
+
     population.sort(key=lambda x: x.cal_fitness())
+
+    # #출력
     # print("세대 번호=", 0)
     # print_p(population)
 
-    max_fitness = 0
+    # population의 평균 fitness 계산
+    sum_fitness = 0
+    for c in population:
+        sum_fitness += c.fitness
+    
+    avg_fitness =  sum_fitness/POPULATION_SIZE
+
+    fitness_list.append(avg_fitness)
+
+    min_fitness = 1000
 
     for i in tqdm(range(args.iteration), desc='Progress'):
     # for i in range(args.iteration):
-        if population[0].fitness < max_fitness:
+        if population[0].fitness < min_fitness:
             MUTATION_RATE = MUTATION_RATE * 0.9
-            max_fitness = population[0].fitness
-        new_pop = []
+            min_fitness = population[0].fitness
+        new_pop = [] 
 
         # 선택과 교차 연산
-        for _ in range(POPULATION_SIZE//2):
+        for _ in range(i if i <POPULATION_SIZE//2 else POPULATION_SIZE//2): # 교차 횟수를 점진적으로 늘려준다.
             c1, c2 = crossover_functions[args.crossover_name](population)
             new_pop.append(Chromosome(c1))
             new_pop.append(Chromosome(c2))
 
         # 자식 세대가 부모 세대를 대체한다. 
-        population = new_pop.copy()
+        population = population[:POPULATION_SIZE-len(new_pop)]
+
+        population += new_pop
         
         # 돌연변이 연산
         for c in population: mutate(c, MUTATION_RATE)
@@ -84,6 +100,7 @@ def main(): # 메인 프로그램
         # 출력을 위한 정렬
         population.sort(key=lambda x: x.cal_fitness())
         
+        # population의 평균 fitness 계산
         sum_fitness = 0
         for c in population:
             sum_fitness += c.fitness
@@ -91,6 +108,9 @@ def main(): # 메인 프로그램
         avg_fitness =  sum_fitness/POPULATION_SIZE
 
         fitness_list.append(avg_fitness)
+        # fitness_list.append(population[0].fitness)
+
+        # #출력
         # print("세대 번호=", i+1)
         # print_p(population)
 
