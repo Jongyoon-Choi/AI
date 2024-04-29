@@ -54,9 +54,9 @@ def main(): # 메인 프로그램
 
     # 초기 염색체를 생성하여 객체 집단에 추가한다. 
     for i in range(POPULATION_SIZE):
-        population.append(Chromosome(num_chunk = i + 1 ,size = SIZE))
+        population.append(Chromosome(num_chunk = i + 1 ,size = SIZE, MAX_VAL= MAX_VAL))
 
-    population.sort(key=lambda x: x.cal_fitness(MAX_VAL))
+    population.sort(key=lambda x: x.cal_fitness())
     # print("세대 번호=", 0)
     # print_p(population)
 
@@ -82,7 +82,7 @@ def main(): # 메인 프로그램
         for c in population: mutate(c, MUTATION_RATE)
 
         # 출력을 위한 정렬
-        population.sort(key=lambda x: x.cal_fitness(MAX_VAL))
+        population.sort(key=lambda x: x.cal_fitness())
         
         sum_fitness = 0
         for c in population:

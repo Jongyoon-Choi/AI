@@ -12,9 +12,11 @@ class Chromosome:
     dist_table = load_csv('distance.csv')[0:998] # 행 슬라이싱
     dist_table = [row[0:998] for row in dist_table] # 열 슬라이싱
 
-    def __init__(self, g = [], num_chunk = 10, size = 998):
+    def __init__(self, g = [], num_chunk = 10, size = 998, MAX_VAL = 420):
         self.genes = g
-        self.fitness = 0		
+        self.fitness = 0
+        self.max_val = MAX_VAL
+
         if self.genes.__len__()==0:	
             # 랜덤 초기화
             # temp_list = list(range(1, size))
@@ -38,7 +40,7 @@ class Chromosome:
 
             
         
-    def cal_fitness(self, MAX_VAL):		# 적합도를 계산
+    def cal_fitness(self):		# 적합도를 계산
         self.fitness = 0
         value = 0
         
@@ -50,8 +52,8 @@ class Chromosome:
             prev_node = node
         value += float(self.dist_table[self.genes[-1]][0]) # 맨 마지막과 맨 앞을 연계
 
-        # 목표 cost가 MAX_VAL 이상이면 MAX_VAL
-        self.fitness = value if value < MAX_VAL else MAX_VAL
+        # 목표 cost가 max_val 이상이면 max_val
+        self.fitness = value if value < self.max_val else self.max_val
         return self.fitness
     
     def __len__(self):
