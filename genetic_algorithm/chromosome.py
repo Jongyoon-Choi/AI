@@ -12,7 +12,7 @@ class Chromosome:
     dist_table = load_csv('distance.csv')[0:998] # 행 슬라이싱
     dist_table = [row[0:998] for row in dist_table] # 열 슬라이싱
 
-    def __init__(self, num_chunk, g = [],  size = 998):
+    def __init__(self, g = [], num_chunk = 10, size = 998):
         self.genes = g
         self.fitness = 0		
         if self.genes.__len__()==0:	
@@ -34,7 +34,7 @@ class Chromosome:
             # 각 subtree 탐색
             for subtree in subtree_list:
                 temp_list += A_star(self.dist_table, subtree)
-            self.genes = temp_list.copy() # 시작점 생략
+            self.genes = temp_list[1:].copy() # 시작점 생략
 
             
         

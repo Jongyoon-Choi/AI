@@ -1,3 +1,4 @@
+from chunk_sort import chunk_sort_function
 from utils import load_csv, save_csv
 from search_methods.greedy import greedy
 from search_methods.A_star import A_star
@@ -6,16 +7,13 @@ from search_methods.A_star import A_star
 # 도시별 거리 테이블을 불러와서 리스트로 저장
 dist_table= load_csv('distance.csv')
 
-# 도시 리스트를 저장
-cities = load_csv('x_y_sorted_TSP.csv')
-
 # 결과 초기화
 sol = []
 
 # 탐색 방법
 search_method='sub_A_star'  # greedy, A_star, sub_A_star
 
-# 방문할 도시 수 (subtree에서는 subtree의 size)
+# 방문할 도시 수 (subtree에서는 num_chunk)
 num_cities=10
 
 # Search
@@ -26,11 +24,14 @@ elif search_method=='A_star':
 elif search_method=='sub_A_star':
     # subtree 반복 탐색 방법 (A*)
     # num_cities와 num_chunk를 조절하여 성능 개선 가능
+    sorted_cities = chunk_sort_function(num_chunk = 10)
     subtree_list = []
+    subtree_size = num_cities
+    size = len(sorted_cities)
 
     # subtree size만큼 분할하여 subtree_list 생성
-    for i in range(0, len(cities), num_cities):
-        subtree =  [int(row[2]) for row in cities[i:i+num_cities if i+num_cities<len(cities) else len(cities)]] 
+    for i in range(0, size, subtree_size):
+        subtree =  sorted_cities[i:i+subtree_size if i+subtree_size < size else size]
         subtree_list.append(subtree)
 
     # 각 subtree 탐색

@@ -15,8 +15,8 @@ from genetic_algorithm.mutation import mutate
 def print_p(pop):
     i = 0
     for x in pop:
-        print(f"염색체 #{i} = {x.genes} 적합도={x.fitness:.2f}")
-        # print(f"염색체 #{i} 적합도={x.fitness:.2f}")
+        # print(f"염색체 #{i} = {x.genes} 적합도={x.fitness:.2f}")
+        print(f"염색체 #{i} 적합도={x.fitness:.2f}")
         i += 1
     print("")
 
@@ -27,7 +27,7 @@ def main(): # 메인 프로그램
     parser.add_argument("--MUTATION_RATE", type=float, default=0.05, help="Mutation rate")
     parser.add_argument("--SIZE", type=int, default=998, help="Number of genes in a chromosome")
     parser.add_argument("--MAX_VAL", type=float, default=420, help="Maximum fitness value")
-    parser.add_argument("--iteration", type=int, default=10, help="Number of iterations")
+    parser.add_argument("--iteration", type=int, default=100, help="Number of iterations")
     parser.add_argument("--crossover_name", type=str, default="order", help="Name of crossover function")
     parser.add_argument("--output_path", type=str, default="GA_result/test", help="output path")
 
@@ -54,7 +54,7 @@ def main(): # 메인 프로그램
 
     # 초기 염색체를 생성하여 객체 집단에 추가한다. 
     for i in range(POPULATION_SIZE):
-        population.append(Chromosome(i + 1 ,size = SIZE))
+        population.append(Chromosome(num_chunk = i + 1 ,size = SIZE))
 
     population.sort(key=lambda x: x.cal_fitness(MAX_VAL))
     # print("세대 번호=", 0)
@@ -62,8 +62,8 @@ def main(): # 메인 프로그램
 
     max_fitness = 0
 
-    # for i in tqdm(range(args.iteration), desc='Progress'):
-    for i in range(args.iteration):
+    for i in tqdm(range(args.iteration), desc='Progress'):
+    # for i in range(args.iteration):
         if population[0].fitness < max_fitness:
             MUTATION_RATE = MUTATION_RATE * 0.9
             max_fitness = population[0].fitness
@@ -91,8 +91,8 @@ def main(): # 메인 프로그램
         avg_fitness =  sum_fitness/POPULATION_SIZE
 
         fitness_list.append(avg_fitness)
-        print("세대 번호=", i+1)
-        print_p(population)
+        # print("세대 번호=", i+1)
+        # print_p(population)
 
     # # csv 파일로 저장 (파일명 변경 예정)
     # sol=[0]+population[0].genes

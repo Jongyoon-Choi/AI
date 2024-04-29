@@ -3,6 +3,6 @@ python3 -u GA.py \
     --MUTATION_RATE 0.005 \
     --SIZE 998 \
     --MAX_VAL 420 \
-    --iteration 4000 \
-    --crossover_name position_based \
+    --iteration 10 \
+    --crossover_name order \
     --output_path GA_result/test > GA_result/test.log 2>&1

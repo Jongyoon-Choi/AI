@@ -1,10 +1,10 @@
 POPULATION_SIZE=(50)
-MUTATION_RATE=(0.005 0.01) 
+MUTATION_RATE=(0.005 0.01 0.05) 
 SIZE=998
 MAX_VAL=420
-iteration=2000
+iteration=1000
 # crossover_name: order, position_based, uniform_order_based, pmx, cycle
-crossover_name=(uniform_order_based)
+crossover_name=(cycle)
 
 for crossover in "${crossover_name[@]}"; do
   output_dir="GA_result/${crossover}"

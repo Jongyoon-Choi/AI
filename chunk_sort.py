@@ -25,7 +25,14 @@ def chunk_sort_function(num_chunk):
             end_idx = (i + 1) * chunk_size
             chunk = cities[start_idx : end_idx if end_idx < num_cities else num_cities]
             chunk.sort(key=lambda city: float(city[1]), reverse= True if i % 2 == 0 else False)  # y 좌표를 기준으로 정렬 (지그재그로)
-            chunk= [row[2] for row in chunk if row[2] != 0]
+            chunk= [row[2] for row in chunk]
             sorted_cities.extend(chunk)
             
+    # 도시 리스트에서 시작점 찾기
+    index = sorted_cities.index(0)
+
+    # 찾은 도시를 맨 앞으로 이동시키기
+    sorted_cities.insert(0, sorted_cities.pop(index))
+
+        
     return sorted_cities
