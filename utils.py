@@ -21,6 +21,3 @@ def distance(x, y):
     dist = np.linalg.norm(np.array(x)-np.array(y)) 
     return dist
 
-def get_pos(cities,index):
-    return [float(cities[index][0]), float(cities[index][1])]
-

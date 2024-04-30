@@ -1,5 +1,7 @@
-import pandas as pd
-from utils import load_csv, save_csv,  distance, get_pos
+from utils import load_csv, save_csv,  distance
+
+def get_pos(cities,index):
+    return [float(cities[index][0]), float(cities[index][1])]
 
 # 좌표를 불러와서 리스트로 저장
 cities = load_csv('2024_AI_TSP.csv')

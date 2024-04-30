@@ -24,10 +24,10 @@ def main(): # 메인 프로그램
     parser = ArgumentParser()
 
     parser.add_argument("--POPULATION_SIZE", type=int, default=50, help="Population size")
-    parser.add_argument("--MUTATION_RATE", type=float, default=0.05, help="Mutation rate")
+    parser.add_argument("--MUTATION_RATE", type=float, default=0.01, help="Mutation rate")
     parser.add_argument("--SIZE", type=int, default=998, help="Number of genes in a chromosome")
     parser.add_argument("--MAX_VAL", type=float, default=420, help="Maximum fitness value")
-    parser.add_argument("--iteration", type=int, default=200, help="Number of iterations")
+    parser.add_argument("--iteration", type=int, default=500, help="Number of iterations")
     parser.add_argument("--crossover_name", type=str, default="cycle", help="Name of crossover function")
     parser.add_argument("--output_path", type=str, default="GA_result/test", help="output path")
 
@@ -122,10 +122,10 @@ def main(): # 메인 프로그램
         # print("세대 번호=", i+1)
         # print_p(population)
 
-    # # csv 파일로 저장
-    # sol=[0]+population[0].genes
+    # csv 파일로 저장
+    sol=[0]+population[0].genes
 
-    # save_csv(sol, f'solutions/GA_Astar_solution.csv')
+    save_csv(sol, f'solutions/GA_Astar_solution.csv')
 
     # cost 출력
     print(f'final cost: {population[0].fitness:.2f}')

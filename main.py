@@ -15,7 +15,7 @@ sol = []
 
 # 탐색 방법
 search_method='sub_A_star'  # greedy, A_star, sub_A_star
-sort_method='quadrant'  # x, origin, quadrant, chunk (sub_A_star일 경우 작성)
+sort_method='chunk'  # x, origin, quadrant, chunk (sub_A_star일 경우 작성)
 
 # 방문할 도시 수 (subtree에서는 num_chunk)
 num_cities=10
@@ -34,7 +34,7 @@ elif search_method=='sub_A_star':   # subtree 반복 탐색 방법 (A*)
     elif sort_method=='quadrant':
         sorted_cities = quadrant_sort_function()
     elif sort_method=='chunk':
-        sorted_cities = chunk_sort_function(num_chunk=10)
+        sorted_cities = chunk_sort_function(num_chunk=16)
     
     subtree_list = []
     subtree_size = num_cities

@@ -5,7 +5,7 @@ from utils import load_csv
 cities = load_csv('2024_AI_TSP.csv')
 
 # solutions 폴더에 있는 파일명 적어주세요.(e.g. 'A_star_10')
-file_name='A_star_20'    
+file_name='greedy_998'    
 solution = load_csv(f'solutions/{file_name}.csv')
 
 # 방문한 도시의 좌표를 저장할 리스트
@@ -17,8 +17,8 @@ for idx in solution:
     visited_order.append((x, y))
 
 # X와 Y 좌표를 따로 저장
-x_coords = [city[0] for city in visited_order]
-y_coords = [city[1] for city in visited_order]
+x_coords = [float(city[0]) for city in visited_order]
+y_coords = [float(city[1]) for city in visited_order]
 
 # 도시의 좌표를 점으로 표시
 plt.figure(figsize=(8, 6))
