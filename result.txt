@@ -19,4 +19,4 @@ A_star: 568422, 3.63
 num_cities=998
 greedy: 998, 27.18
 x_sorted: ?, 97.67
-x_y_sorted: ?, 29.57
+chunk_sorted: ?, 29.57 (chunk_num=10)

@@ -60,3 +60,9 @@ class Chromosome:
     
     def __len__(self):
         return len(self.genes)
+    
+    def __eq__(self, other):
+        if isinstance(other, Chromosome):
+            # 모든 genes의 원소를 비교하여 같으면 True 반환, 아니면 False 반환
+            return all(x == y for x, y in zip(self.genes, other.genes))
+        return False
