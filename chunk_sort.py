@@ -6,7 +6,6 @@ def chunk_sort_function(num_chunk):
 
     # 좌표를 불러와서 리스트로 저장
     cities = load_csv('2024_AI_TSP.csv')
-
     num_cities = len(cities)
 
     # 각 csv 라인에 index 추가

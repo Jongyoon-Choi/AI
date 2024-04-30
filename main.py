@@ -1,3 +1,6 @@
+from x_sort import x_sort_function
+from origin_sort import origin_sort_function
+from quadrant_sort import quadrant_sort_function
 from chunk_sort import chunk_sort_function
 from utils import load_csv, save_csv
 from search_methods.greedy import greedy
@@ -12,6 +15,7 @@ sol = []
 
 # 탐색 방법
 search_method='sub_A_star'  # greedy, A_star, sub_A_star
+sort_method='quadrant'  # x, origin, quadrant, chunk (sub_A_star일 경우 작성)
 
 # 방문할 도시 수 (subtree에서는 num_chunk)
 num_cities=10
@@ -21,10 +25,17 @@ if search_method=='greedy':
     sol += greedy(dist_table, [i for i in range(num_cities)])   # num_cities개의 도시만 탐색
 elif search_method=='A_star':
     sol += A_star(dist_table, [i for i in range(num_cities)])   # num_cities개의 도시만 탐색
-elif search_method=='sub_A_star':
-    # subtree 반복 탐색 방법 (A*)
-    # num_cities와 num_chunk를 조절하여 성능 개선 가능
-    sorted_cities = chunk_sort_function(num_chunk = 10)
+elif search_method=='sub_A_star':   # subtree 반복 탐색 방법 (A*)
+    # 정렬
+    if sort_method=='x':
+        sorted_cities = x_sort_function()
+    elif sort_method=='origin':
+        sorted_cities = origin_sort_function()
+    elif sort_method=='quadrant':
+        sorted_cities = quadrant_sort_function()
+    elif sort_method=='chunk':
+        sorted_cities = chunk_sort_function(num_chunk=10)
+    
     subtree_list = []
     subtree_size = num_cities
     size = len(sorted_cities)
@@ -38,8 +49,11 @@ elif search_method=='sub_A_star':
     for subtree in subtree_list:
         sol += A_star(dist_table, subtree)
 
-# save as csv
-save_csv(sol, f'solutions/{search_method}_{num_cities}.csv')
+if search_method=='sub_A_star':
+    save_csv(sol, f'solutions/{search_method}_{sort_method}.csv')
+else:
+    save_csv(sol, f'solutions/{search_method}_{num_cities}.csv')
+
 
 # 시작점을 추가
 sol.append(int(0))
@@ -55,5 +69,3 @@ for idx in range(len(sol)-1):
 
 # 출력
 print(f'final cost: {total_cost:.2f}')
-
-
